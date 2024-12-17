@@ -9,3 +9,4 @@ __pycache__/
 # Ignore static and media files
 static/
 media/
+git add .gitignore

@@ -1,0 +1,74 @@
+{% extends 'base.html' %}
+
+{% block title %}الفئات - رؤية المنتج{% endblock %}
+
+{% block content %}
+<div class="categories-header bg-light py-4 mb-5">
+    <div class="container">
+        <h1 class="display-5 fw-bold">فئات المنتجات</h1>
+        <p class="lead">تصفح مجموعتنا الشاملة من فئات المنتجات</p>
+    </div>
+</div>
+
+<div class="container">
+    <div class="row g-4">
+        {% for category in categories %}
+        <div class="col-md-4 col-lg-3">
+            <div class="category-card card h-100">
+                <div class="card-body text-center">
+                    <i class="{{ category.icon }} fa-2x text-primary mb-3"></i>
+                    <h3 class="card-title h5">{{ category.name }}</h3>
+                    <p class="text-muted">{{ category.product_count }} منتج</p>
+                    <div class="category-subcategories small text-muted mb-3">
+                        {% with subcats=category.subcategories.all %}
+                            {% for subcategory in subcats|slice:":3" %}
+                                <span class="d-block">{{ subcategory.name }}</span>
+                            {% endfor %}
+                            {% if subcats|length > 3 %}
+                                <span class="d-block">+ {{ subcats|length|add:"-3" }} المزيد</span>
+                            {% endif %}
+                        {% endwith %}
+                    </div>
+                    <a href="{% url 'products:category_detail' slug=category.slug %}" class="btn btn-outline-primary">عرض المنتجات</a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    {% if featured_categories %}
+    <section class="featured-categories mt-5">
+        <h2 class="section-title mb-4">الفئات المميزة</h2>
+        <div class="row g-4">
+            {% for category in featured_categories %}
+            <div class="col-md-6">
+                <div class="featured-category-card card h-100 border-0 shadow-sm">
+                    <div class="row g-0">
+                        <div class="col-4">
+                            {% if category.image %}
+                                <img src="{{ category.image.url }}" class="img-fluid rounded-start h-100" alt="{{ category.name }}" style="object-fit: cover;">
+                            {% else %}
+                                <div class="h-100 bg-light d-flex align-items-center justify-content-center">
+                                    <i class="{{ category.icon }} fa-3x text-primary"></i>
+                                </div>
+                            {% endif %}
+                        </div>
+                        <div class="col-8">
+                            <div class="card-body">
+                                <h3 class="card-title h4">{{ category.name }}</h3>
+                                <p class="card-text">{{ category.description|truncatewords:20 }}</p>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <span class="text-muted">{{ category.product_count }} منتج</span>
+                                    <a href="{% url 'products:category_detail' slug=category.slug %}" class="btn btn-primary">استكشف</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </section>
+    {% endif %}
+</div>
+{% endblock %}

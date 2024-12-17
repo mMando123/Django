@@ -1,0 +1,73 @@
+{% extends 'base.html' %}
+
+{% block title %}اتصل بنا - رؤية المنتج{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row">
+        <div class="col-lg-8 mx-auto text-center mb-5">
+            <h1 class="display-4 mb-4">اتصل بنا</h1>
+            <p class="lead text-muted">لديك أسئلة؟ نحن نسعد بسماع منك.</p>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-8 mx-auto">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body p-5">
+                    <form method="post" class="contact-form">
+                        {% csrf_token %}
+                        <div class="mb-4">
+                            <label for="name" class="form-label">الاسم</label>
+                            <input type="text" class="form-control" id="name" name="name" required>
+                        </div>
+                        <div class="mb-4">
+                            <label for="email" class="form-label">البريد الإلكتروني</label>
+                            <input type="email" class="form-control" id="email" name="email" required>
+                        </div>
+                        <div class="mb-4">
+                            <label for="subject" class="form-label">الموضوع</label>
+                            <input type="text" class="form-control" id="subject" name="subject" required>
+                        </div>
+                        <div class="mb-4">
+                            <label for="message" class="form-label">الرسالة</label>
+                            <textarea class="form-control" id="message" name="message" rows="5" required></textarea>
+                        </div>
+                        <div class="text-center">
+                            <button type="submit" class="btn btn-primary btn-lg px-5">إرسال الرسالة</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mt-5">
+        <div class="col-lg-8 mx-auto">
+            <div class="row text-center">
+                <div class="col-md-4 mb-4">
+                    <div class="p-4">
+                        <i class="fas fa-envelope text-primary fa-2x mb-3"></i>
+                        <h4 class="h5">البريد الإلكتروني</h4>
+                        <p class="text-muted">info@productinsight.com</p>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-4">
+                    <div class="p-4">
+                        <i class="fas fa-phone text-primary fa-2x mb-3"></i>
+                        <h4 class="h5">الهاتف</h4>
+                        <p class="text-muted">+1234567890</p>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-4">
+                    <div class="p-4">
+                        <i class="fas fa-map-marker-alt text-primary fa-2x mb-3"></i>
+                        <h4 class="h5">العنوان</h4>
+                        <p class="text-muted">القاهرة، مصر</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

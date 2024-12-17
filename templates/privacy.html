@@ -1,0 +1,85 @@
+{% extends 'base.html' %}
+
+{% block title %}سياسة الخصوصية - رؤية المنتج{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-10">
+            <h1 class="mb-4">سياسة الخصوصية</h1>
+            
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <section class="mb-5">
+                        <h2 class="h4 mb-3">1. جمع المعلومات</h2>
+                        <p>نحن نجمع المعلومات التي تقدمها لنا عند:</p>
+                        <ul class="list-unstyled">
+                            <li class="mb-2">• إنشاء حساب</li>
+                            <li class="mb-2">• تقديم مراجعة أو تقييم</li>
+                            <li class="mb-2">• الاتصال بفريق الدعم</li>
+                            <li class="mb-2">• إضافة منتجات إلى المفضلة</li>
+                        </ul>
+                    </section>
+
+                    <section class="mb-5">
+                        <h2 class="h4 mb-3">2. استخدام المعلومات</h2>
+                        <p>نستخدم المعلومات التي نجمعها لـ:</p>
+                        <ul class="list-unstyled">
+                            <li class="mb-2">• تحسين خدماتنا</li>
+                            <li class="mb-2">• تخصيص تجربة المستخدم</li>
+                            <li class="mb-2">• التواصل معك بخصوص حسابك</li>
+                            <li class="mb-2">• إرسال تحديثات عن المنتجات التي تهمك</li>
+                        </ul>
+                    </section>
+
+                    <section class="mb-5">
+                        <h2 class="h4 mb-3">3. حماية المعلومات</h2>
+                        <p>نحن نتخذ إجراءات أمنية مناسبة لحماية معلوماتك من:</p>
+                        <ul class="list-unstyled">
+                            <li class="mb-2">• الوصول غير المصرح به</li>
+                            <li class="mb-2">• التغيير</li>
+                            <li class="mb-2">• الإفصاح</li>
+                            <li class="mb-2">• التدمير</li>
+                        </ul>
+                    </section>
+
+                    <section class="mb-5">
+                        <h2 class="h4 mb-3">4. مشاركة المعلومات</h2>
+                        <p>نحن لا نبيع أو نؤجر أو نتاجر بمعلوماتك الشخصية مع أطراف ثالثة. قد نشارك معلوماتك فقط في الحالات التالية:</p>
+                        <ul class="list-unstyled">
+                            <li class="mb-2">• بموافقتك</li>
+                            <li class="mb-2">• لأغراض قانونية</li>
+                            <li class="mb-2">• لحماية حقوقنا</li>
+                        </ul>
+                    </section>
+
+                    <section class="mb-5">
+                        <h2 class="h4 mb-3">5. ملفات تعريف الارتباط</h2>
+                        <p>نستخدم ملفات تعريف الارتباط لتحسين تجربة التصفح. يمكنك تعطيل ملفات تعريف الارتباط في متصفحك، ولكن قد يؤثر ذلك على وظائف الموقع.</p>
+                    </section>
+
+                    <section class="mb-5">
+                        <h2 class="h4 mb-3">6. حقوقك</h2>
+                        <p>لديك الحق في:</p>
+                        <ul class="list-unstyled">
+                            <li class="mb-2">• الوصول إلى معلوماتك</li>
+                            <li class="mb-2">• تصحيح معلوماتك</li>
+                            <li class="mb-2">• حذف حسابك</li>
+                            <li class="mb-2">• الاعتراض على معالجة معلوماتك</li>
+                        </ul>
+                    </section>
+
+                    <section>
+                        <h2 class="h4 mb-3">7. تواصل معنا</h2>
+                        <p>إذا كان لديك أي أسئلة حول سياسة الخصوصية، يرجى التواصل معنا عبر صفحة <a href="{% url 'contact' %}">اتصل بنا</a>.</p>
+                    </section>
+                </div>
+            </div>
+
+            <div class="text-center mt-4">
+                <a href="{% url 'home' %}" class="btn btn-outline-primary">العودة إلى الصفحة الرئيسية</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

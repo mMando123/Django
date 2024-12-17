@@ -1,0 +1,276 @@
+{% extends 'base.html' %}
+{% load product_filters %}
+
+{% block title %}مقارنة المنتجات{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <!-- Breadcrumb -->
+    <nav aria-label="breadcrumb" class="mb-4">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{% url 'home' %}">الرئيسية</a></li>
+            <li class="breadcrumb-item active">مقارنة المنتجات</li>
+        </ol>
+    </nav>
+
+    {% if products %}
+    <div class="comparison-header d-flex justify-content-between align-items-center mb-4">
+        <h1 class="h2">مقارنة المنتجات ({{ products|length }})</h1>
+        <a href="{% url 'products:clear_comparison' %}" class="btn btn-outline-danger">
+            <i class="fas fa-trash-alt me-2"></i>مسح المقارنة
+        </a>
+    </div>
+
+    <div class="table-responsive">
+        <table class="table table-bordered comparison-table">
+            <thead>
+                <tr>
+                    <th scope="col" class="bg-light">المواصفات</th>
+                    {% for product in products %}
+                    <th scope="col" class="text-center position-relative" style="min-width: 250px;">
+                        <a href="{% url 'products:remove_from_compare' product.id %}" class="btn-remove position-absolute top-0 end-0 p-2">
+                            <i class="fas fa-times text-danger"></i>
+                        </a>
+                        <img src="{{ product.image.url }}" alt="{{ product.name }}" class="img-fluid mb-2" style="max-height: 150px;">
+                        <h5>{{ product.name }}</h5>
+                    </th>
+                    {% endfor %}
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Price -->
+                <tr>
+                    <th scope="row">السعر</th>
+                    {% for product in products %}
+                    <td>{{ product.formatted_price }}</td>
+                    {% endfor %}
+                </tr>
+                
+                <!-- Rating -->
+                <tr>
+                    <th scope="row" class="bg-light">التقييم</th>
+                    {% for product in products %}
+                    <td class="text-center">
+                        <div class="rating">
+                            {% for i in "12345"|make_list %}
+                            <i class="fas fa-star {% if forloop.counter <= product.average_rating %}text-warning{% else %}text-muted{% endif %}"></i>
+                            {% endfor %}
+                            <span class="text-muted">({{ product.total_reviews }})</span>
+                        </div>
+                    </td>
+                    {% endfor %}
+                </tr>
+
+                <!-- Availability -->
+                <tr>
+                    <th scope="row" class="bg-light">التوفر</th>
+                    {% for product in products %}
+                    <td class="text-center">
+                        <span class="badge {% if product.availability == 'in_stock' %}bg-success{% else %}bg-danger{% endif %}">
+                            {% if product.availability == 'in_stock' %}متوفر{% else %}غير متوفر{% endif %}
+                        </span>
+                    </td>
+                    {% endfor %}
+                </tr>
+
+                <!-- Description -->
+                <tr>
+                    <th scope="row" class="bg-light">الوصف</th>
+                    {% for product in products %}
+                    <td>{{ product.description|linebreaks }}</td>
+                    {% endfor %}
+                </tr>
+
+                <!-- Specifications -->
+                {% if has_specifications %}
+                {% for spec_key in all_specifications %}
+                <tr>
+                    <th scope="row" class="bg-light">{{ spec_key }}</th>
+                    {% for product in products %}
+                    <td class="text-center">
+                        {{ product.specifications|get_dict_value:spec_key|default:"-" }}
+                    </td>
+                    {% endfor %}
+                </tr>
+                {% endfor %}
+                {% endif %}
+
+                <!-- Features -->
+                <tr>
+                    <th scope="row" class="bg-light">المميزات</th>
+                    {% for product in products %}
+                    <td>
+                        {% if product.features %}
+                        <ul class="list-unstyled mb-0">
+                            {% for feature in product.features %}
+                            <li class="mb-2">
+                                <i class="fas fa-check text-success me-2"></i>{{ feature }}
+                            </li>
+                            {% endfor %}
+                        </ul>
+                        {% else %}
+                        <span class="text-muted">-</span>
+                        {% endif %}
+                    </td>
+                    {% endfor %}
+                </tr>
+
+                <!-- Actions -->
+                <tr>
+                    <th scope="row" class="bg-light">الإجراءات</th>
+                    {% for product in products %}
+                    <td class="text-center">
+                        <a href="{% url 'products:product_detail' slug=product.slug %}" class="btn btn-primary mb-2 w-100">
+                            عرض التفاصيل
+                        </a>
+                    </td>
+                    {% endfor %}
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+    <div class="text-center py-5">
+        <div class="mb-4">
+            <i class="fas fa-scale-balanced fa-4x text-muted"></i>
+        </div>
+        <h2 class="h4 mb-3">لم تقم بإضافة أي منتجات للمقارنة</h2>
+        <p class="text-muted mb-4">قم بتصفح المنتجات وإضافتها للمقارنة باستخدام زر "إضافة للمقارنة"</p>
+        <a href="{% url 'products:category_list' %}" class="btn btn-primary">
+            تصفح المنتجات
+        </a>
+    </div>
+    {% endif %}
+</div>
+
+<!-- Comparison Bar -->
+{% if comparison_list %}
+<div class="comparison-bar fixed-bottom bg-white shadow-lg py-3" style="display: none;">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col">
+                <div class="d-flex align-items-center">
+                    <span class="me-3">المنتجات المحددة للمقارنة:</span>
+                    <div class="comparison-items d-flex">
+                        {% for product in comparison_list %}
+                        <div class="comparison-item me-3">
+                            <img src="{{ product.image.url }}" alt="{{ product.name }}" class="rounded" style="height: 40px;">
+                            <button class="btn-remove btn btn-sm btn-link text-danger" data-product-id="{{ product.id }}">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+            <div class="col-auto">
+                <a href="{% url 'products:compare' %}" class="btn btn-primary">
+                    مقارنة ({{ comparison_list|length }})
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+{% endblock %}
+
+{% block extra_css %}
+<style>
+    .comparison-table th {
+        min-width: 150px;
+    }
+    
+    .comparison-table td {
+        vertical-align: middle;
+    }
+    
+    .btn-remove {
+        background: none;
+        border: none;
+        padding: 0;
+        cursor: pointer;
+    }
+    
+    .comparison-bar {
+        border-top: 1px solid #dee2e6;
+        z-index: 1000;
+    }
+    
+    .comparison-item {
+        position: relative;
+        display: inline-block;
+    }
+    
+    .comparison-item .btn-remove {
+        position: absolute;
+        top: -8px;
+        right: -8px;
+        background: white;
+        border-radius: 50%;
+        padding: 2px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+
+    /* RTL Support */
+    .me-2 {
+        margin-left: 0.5rem !important;
+        margin-right: 0 !important;
+    }
+
+    .me-3 {
+        margin-left: 1rem !important;
+        margin-right: 0 !important;
+    }
+
+    .end-0 {
+        left: 0 !important;
+        right: auto !important;
+    }
+</style>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Show comparison bar if there are products to compare
+    const comparisonBar = document.querySelector('.comparison-bar');
+    if (comparisonBar) {
+        comparisonBar.style.display = 'block';
+    }
+
+    // Handle remove buttons in comparison bar
+    document.querySelectorAll('.btn-remove').forEach(button => {
+        button.addEventListener('click', function(e) {
+            e.preventDefault();
+            const productId = this.dataset.productId;
+            fetch(`/products/remove-from-compare/${productId}/`, {
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': getCookie('csrftoken')
+                }
+            }).then(response => {
+                if (response.ok) {
+                    window.location.reload();
+                }
+            });
+        });
+    });
+
+    // Get CSRF token from cookies
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+});
+</script>
+{% endblock %}

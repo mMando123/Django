@@ -1,0 +1,73 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: Product Insight\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2024-12-14 10:52+0200\n"
+"PO-Revision-Date: 2024-12-14 10:52+0200\n"
+"Last-Translator: \n"
+"Language-Team: Arabic\n"
+"Language: ar\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=6; plural=n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 && n%100<=10 ? 3 : n%100>=11 && n%100<=99 ? 4 : 5;\n"
+
+msgid "Product Insight"
+msgstr "رؤية المنتج"
+
+msgid "Home"
+msgstr "الرئيسية"
+
+msgid "Categories"
+msgstr "الفئات"
+
+msgid "All Categories"
+msgstr "جميع الفئات"
+
+msgid "About"
+msgstr "حول"
+
+msgid "Contact"
+msgstr "اتصل بنا"
+
+msgid "Search products..."
+msgstr "البحث عن المنتجات..."
+
+msgid "Search"
+msgstr "بحث"
+
+msgid "Change Password"
+msgstr "تغيير كلمة المرور"
+
+msgid "Logout"
+msgstr "تسجيل الخروج"
+
+msgid "Login"
+msgstr "تسجيل الدخول"
+
+msgid "Register"
+msgstr "تسجيل"
+
+msgid "About Product Insight"
+msgstr "حول رؤية المنتج"
+
+msgid "Your trusted source for product reviews and comparisons. Make informed decisions with real user experiences."
+msgstr "مصدرك الموثوق لمراجعات المنتجات والمقارنات. اتخذ قرارات مستنيرة مع تجارب المستخدمين الحقيقية."
+
+msgid "Quick Links"
+msgstr "روابط سريعة"
+
+msgid "About Us"
+msgstr "معلومات عنا"
+
+msgid "Privacy Policy"
+msgstr "سياسة الخصوصية"
+
+msgid "Terms of Service"
+msgstr "شروط الخدمة"
+
+msgid "Follow Us"
+msgstr "تابعنا"
+
+msgid "Product Insight. All rights reserved."
+msgstr "رؤية المنتج. جميع الحقوق محفوظة."

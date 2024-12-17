@@ -1,0 +1,214 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}{{ category.name }}{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{% url 'home' %}">الرئيسية</a></li>
+            <li class="breadcrumb-item"><a href="{% url 'products:category_list' %}">الفئات</a></li>
+            <li class="breadcrumb-item active" aria-current="page">{{ category.name }}</li>
+        </ol>
+    </nav>
+
+    <div class="row mb-4">
+        <div class="col-md-8">
+            <h1 class="display-4">{{ category.name }}</h1>
+            {% if category.description %}
+            <p class="lead text-muted">{{ category.description }}</p>
+            {% endif %}
+        </div>
+        {% if is_expert %}
+        <div class="col-md-4 text-md-end align-self-center">
+            <a href="{% url 'products:add_product' category_slug=category.slug %}" class="btn btn-primary btn-lg">
+                <i class="fas fa-plus-circle me-2"></i>إضافة منتج جديد
+            </a>
+        </div>
+        {% endif %}
+    </div>
+
+    {% if messages %}
+    {% for message in messages %}
+    <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+        {{ message }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+    {% endfor %}
+    {% endif %}
+
+    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+        {% for product in products %}
+        <div class="col">
+            <div class="card h-100 shadow-sm hover-card">
+                {% if product.image %}
+                <img src="{{ product.image.url }}" class="card-img-top product-img" alt="{{ product.name }}">
+                {% else %}
+                <img src="{% static 'images/default-product.jpg' %}" class="card-img-top product-img" alt="{{ product.name }}">
+                {% endif %}
+                <div class="card-body">
+                    <h5 class="card-title">{{ product.name }}</h5>
+                    <p class="card-text text-truncate">{{ product.description }}</p>
+                    <div class="d-flex justify-content-between align-items-center">
+                        <span class="h5 mb-0">{{ product.formatted_price }}</span>
+                        <span class="badge {% if product.availability == 'in_stock' %}bg-success{% else %}bg-danger{% endif %}">
+                            {% if product.availability == 'in_stock' %}متوفر{% else %}غير متوفر{% endif %}
+                        </span>
+                    </div>
+                </div>
+                <div class="card-footer bg-transparent border-top-0">
+                    <a href="{% url 'products:product_detail' slug=product.slug %}" class="btn btn-outline-primary w-50 me-2">
+                        عرض التفاصيل
+                    </a>
+                    <button class="btn btn-outline-secondary add-to-compare" data-product-id="{{ product.id }}"
+                            {% if product.id in request.session.comparison_list %}disabled{% endif %}>
+                        <i class="fas fa-balance-scale"></i>
+                        مقارنة
+                    </button>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <div class="col-12">
+            <div class="alert alert-info text-center">
+                لا توجد منتجات في هذه الفئة حتى الآن.
+                {% if is_expert %}
+                <br>
+                <a href="{% url 'products:add_product' category_slug=category.slug %}" class="btn btn-primary mt-2">
+                    إضافة أول منتج
+                </a>
+                {% endif %}
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+<style>
+    .product-img {
+        height: 200px;
+        object-fit: cover;
+    }
+
+    .hover-card {
+        transition: all 0.3s ease;
+    }
+
+    .hover-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 4px 15px rgba(0,0,0,0.1) !important;
+    }
+
+    .card-title {
+        font-weight: 600;
+        margin-bottom: 0.75rem;
+    }
+
+    .badge {
+        padding: 0.5em 1em;
+        font-weight: 500;
+    }
+
+    /* RTL Support */
+    body {
+        direction: rtl;
+        text-align: right;
+    }
+
+    .breadcrumb-item + .breadcrumb-item::before {
+        float: right;
+        padding-left: 0.5rem;
+        padding-right: 0.5rem;
+    }
+
+    .me-2 {
+        margin-left: 0.5rem !important;
+        margin-right: 0 !important;
+    }
+
+    .alert-dismissible {
+        padding-right: 1rem;
+        padding-left: 3rem;
+    }
+
+    .alert-dismissible .btn-close {
+        left: 0;
+        right: auto;
+    }
+</style>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Add to Compare functionality
+    document.querySelectorAll('.add-to-compare').forEach(button => {
+        button.addEventListener('click', function() {
+            const productId = this.dataset.productId;
+            const button = this;  // Store button reference
+            
+            fetch(`/products/add-to-compare/${productId}/`, {
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': getCookie('csrftoken')
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    button.disabled = true;
+                    showToast('success', data.message);
+                    
+                    // Show comparison bar if not visible
+                    const comparisonBar = document.querySelector('.comparison-bar');
+                    if (comparisonBar) {
+                        comparisonBar.style.display = 'block';
+                    }
+                    
+                    // Reload after a short delay
+                    setTimeout(() => window.location.reload(), 1000);
+                } else {
+                    showToast('error', data.message);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                showToast('error', 'حدث خطأ أثناء إضافة المنتج للمقارنة');
+            });
+        });
+    });
+
+    // Get CSRF token from cookies
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+
+    // Toast notification function
+    function showToast(type, message) {
+        const toast = document.createElement('div');
+        toast.className = `toast position-fixed bottom-0 end-0 m-3 bg-${type === 'success' ? 'success' : 'danger'} text-white`;
+        toast.setAttribute('role', 'alert');
+        toast.innerHTML = `
+            <div class="toast-body">
+                ${message}
+            </div>
+        `;
+        document.body.appendChild(toast);
+        new bootstrap.Toast(toast).show();
+        setTimeout(() => toast.remove(), 3000);
+    }
+});
+</script>
+{% endblock %}
